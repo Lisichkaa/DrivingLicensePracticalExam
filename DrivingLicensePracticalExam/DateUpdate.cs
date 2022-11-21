@@ -11,12 +11,12 @@ namespace DrivingLicensePracticalExam
     {
         SentMsg print = new();
         AllData data = new();
-        Notifier notifier = new();  
+        Notifier notifier = new();
         public Dictionary<string, List<string>> UpdateDate(Dictionary<string, List<string>> CityDatesA, Dictionary<string, List<string>> CityDatesB)
         {
             Dictionary<string, List<string>> update = new Dictionary<string, List<string>>();
 
-            foreach (var cityDate in CityDatesB) 
+            foreach (var cityDate in CityDatesB)
             {
                 string city = cityDate.Key;
                 if (CityDatesA.ContainsKey(city))
@@ -26,21 +26,27 @@ namespace DrivingLicensePracticalExam
 
                     if (Enumerable.SequenceEqual(listA, listB))
                     {
-                        Console.WriteLine($"{city} odinakovay");
+                        Console.WriteLine($"{city} not changed");
                         continue;
                     }
 
                     else
                     {
                         List<string> listPostTg = listB.Except(listA).ToList();
-                        Console.WriteLine("изменилось");
+
+                        if (listPostTg.Count == 0)
+                        {
+                            continue;
+                        }
+                        Console.WriteLine($"in {city} date was update ");
+
                         update[city] = listPostTg;
                     }
 
                 }
             }
             return update;
-            
+
         }
 
         public void UpdateMechanic(Dictionary<string, List<string>> cityDatesA)
@@ -52,16 +58,18 @@ namespace DrivingLicensePracticalExam
                 Thread.Sleep(TimeSpan.FromMinutes(61));
                 //Thread.Sleep(TimeSpan.FromSeconds(20));
                 Console.WriteLine("start mechanic");
-                count ++;
+                count++;
 
                 Dictionary<string, List<string>> cityDatesB = data.GetAllData("3");
                 Dictionary<string, List<string>> updDates = UpdateDate(cityDatesA, cityDatesB);
 
-                foreach (var u in updDates)
-                {
-                    notifier.Notify("MECHANIC UPDATE", false);
-                    print.SentUpdate(u.Key, u.Value);
-                }
+                /*foreach (var u in updDates)
+               {
+                   notifier.Notify("MECHANIC UPDATE", false);
+                   print.SentUpdate(u.Key, u.Value);
+               }*/
+
+                print.SentUpdateNew(updDates, "3");
 
                 cityDatesA = cityDatesB;
 
@@ -75,8 +83,8 @@ namespace DrivingLicensePracticalExam
         }
 
         public void UpdateAutomatic(Dictionary<string, List<string>> cityDatesA)
-        {         
-            int count = 0;  
+        {
+            int count = 0;
             while (true)
             {
                 Console.WriteLine("sleep AUTH");
@@ -87,12 +95,14 @@ namespace DrivingLicensePracticalExam
 
                 Dictionary<string, List<string>> cityDatesB = data.GetAllData("4");
                 Dictionary<string, List<string>> updDates = UpdateDate(cityDatesA, cityDatesB);
-                
-                foreach (var u in updDates)
-                {
-                    notifier.Notify("AUTHOMATIC UPDATE", false);
-                    print.SentUpdate(u.Key, u.Value);
-                }
+
+                /*foreach (var u in updDates)
+              {
+                  notifier.Notify("AUTHOMATIC UPDATE", false);
+                  print.SentUpdate(u.Key, u.Value);
+              }*/
+
+                print.SentUpdateNew(updDates, "4");
 
                 cityDatesA = cityDatesB;
 

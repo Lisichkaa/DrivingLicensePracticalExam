@@ -50,5 +50,32 @@ namespace DrivingLicensePracticalExam
             Console.WriteLine("sent update");
 
         }
+
+        public void SentUpdateNew(Dictionary<string, List<string>> updateDates, string categoryCode)
+        {
+            string print = "";
+            if (categoryCode == "3")
+            {
+                print = "MECHANIC UPDATE" + "\n";
+            }
+            if (categoryCode == "4")
+            {
+                print = "AUTHOMATIC UPDATE" + "\n";
+            }
+
+            foreach (var city in updateDates.Keys)
+            {
+                print += "\n" + city + "\n";
+
+                foreach (var dates in updateDates[city])
+                {
+                    print += dates + "\n";
+                }
+            }
+
+            notifier.Notify(print);
+            Console.WriteLine("sent update");
+
+        }
     }
 }
